@@ -4,13 +4,12 @@
 
 // Plotly.newPlot("plotArea", [{ x: [8, 10, 15], y: [5, 20, 80] }]);
 
-// var trace = [{
-//     x: ["burrito", "pizza", "chicken"],
-//     y: [10, 18, 5],
-//     type: "bar"
-// }];
-
-// Plotly.newPlot("plotArea", trace);
+var trace = [{
+    x: ["burrito", "pizza", "chicken"],
+    y: [10, 18, 5],
+    type: "bar"
+}];
+Plotly.newPlot("plotArea", trace);
 
 // var trace = {
 //     x: ["burrito", "pizza", "chicken"],

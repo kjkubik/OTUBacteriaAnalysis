@@ -21,6 +21,7 @@ d3.json(url).then(spaceXResults =>
 latitude = d3.json(url).then(spaceXResults => spaceXResults.map(locLat => locLat.location.latitude));
 longitude = d3.json(url).then(spaceXResults => spaceXResults.map(locLat => locLat.location.longitude));
 
+// I think they want to display/work with it like this
 d3.json(url).then(spaceXResults =>
     console.log(spaceXResults.map(locLat => locLat.location.latitude + ", " +
         locLat.location.longitude)));
