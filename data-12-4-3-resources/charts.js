@@ -1,8 +1,7 @@
+// populating dropdown list
 function init() {
-    // dropdown element selected
+    // name where data in samples.json is going
     var selector = d3.select("#selDataset");
-    // test/debug sampleNames
-    console.log(selector);
 
     // Use the list of sample names to populate the select options
     d3.json("samples.json").then((data) => {
@@ -33,7 +32,7 @@ init();
 function optionChanged(newSample) {
     // Fetch new data each time a new sample is selected
     buildMetadata(newSample);
-    buildCharts(newSample);
+    //  buildCharts(newSample);
 
 }
 
