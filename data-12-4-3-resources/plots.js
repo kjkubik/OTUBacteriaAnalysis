@@ -172,7 +172,7 @@ function buildCharts(subjectsId) {
 
         // 2. Create the layout for the bubble chart.
         var bubbleLayout = {
-            title: 'How Much Bacteria is in Each Person"s Belly Button?',
+            title: "How Much Bacteria is in Each Subject's Belly Button?",
             xaxis: { title: "OTU Ids" },
             // yaxis: { title: "Sample Values" }
             margin: { l: 100 },
