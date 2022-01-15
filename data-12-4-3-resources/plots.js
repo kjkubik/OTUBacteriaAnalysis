@@ -60,133 +60,191 @@ function buildMetadata(subjectsId) {
         // name the div id in HTML where demographics are listed
         var sampleMetadata = d3.select("#sample-metadata");
         // console.log(sampleMetadata);
+
         //initialize div
         sampleMetadata.html("");
 
+        //         // get table references
+        //         var tbody = d3.select("tbody");
+
+        //         // initialize html table body
+        //         tbody.html("");
+
+        //         // Loop through each object in the data
+        //         // and append a row and cells for each value in the row
+        //         result.forEach(resultRow => {
+        //             KeyValues =
+        //                 Object.entries(result).forEach(([key, value]) => {
+        //                     sampleMetadata.append("td").text(`${key.toUpperCase().slice(0,1)+key.slice(1)}: ${value}`);
+        //                 });
+        //             let row = tbody.append("tr");
+        //             KeyValues.values(resultRow).forEach((KVPRow) => {
+        //                 let cell = row.append("td");
+        //                 cell.text(KVPRow);
+        //                 // sampleMetadata..text(`${key.toUpperCase().slice(0,1)+key.slice(1)}: ${value}`);
+        //                 // cell.text(val);
+        //             });
+        //         });
+        //     })
+        // };
         // load results
         Object.entries(result).forEach(([key, value]) => {
-            sampleMetadata.append("h6").text(`${key.toUpperCase().slice(0,1)+key.slice(1)}: ${value}`);
+            sampleMetadata.append("h5").text(`${key.toUpperCase().slice(0,1)+key.slice(1)}: ${value}`);
         });
     });
 }
 
-// redering of Bar chart 
+// rendering of Charts 
 function buildCharts(subjectsId) {
-    // 2. Use d3.json to load and retrieve the samples.json file 
+    // d3.json to load and retrieve the samples.json file 
     d3.json("samples.json").then((testSubjectData) => {
-        // select all samples
-        var allSamples = testSubjectData.samples;
-        //console.log(allSamples);
-        // 4. Create a variable that filters the samples for the object with the desired sample number.
-        var argsSample = allSamples.filter(sample => sample.id == subjectsId);
-        //console.log(argsSample);
-        //  5. Create a variable that holds the first sample in the array.
-        var result = argsSample[0];
+
+        //**********************// 
+        //*  BEGIN BAR CHART   *//
+        //**********************//
+
+        // get all sample data in samples.json
+        var sample = testSubjectData.samples;
+        // console.log(samples);
+
+        // filter out selected test subject's sample data
+        var subjectsSample = sample.filter(sample => sample.id == subjectsId);
+        // console.log(subjectsSample);
+
+        // save otu_ids, otu_lables and sample_values of subjectSample
+        var result = subjectsSample[0];
         //console.log(result);
 
-        // 6. Create variables that hold the otu_ids, otu_labels, and sample_values.
-        var otuIds = argsSample.map(samples => samples.otu_ids);
+        // place otu_ids, otu_labels, and sample_values in own Arrays
+        var otuIds = result.otu_ids;
+        (1, 20, 100)
         //console.log(otuIds);
-        var otuLabels = argsSample.map(labels => labels.otu_labels);
+        var otuLabels = result.otu_labels;
         //console.log(otuLabels);
-        var sampleValues = argsSample.map(samples => samples.sample_values);
+        var sampleValues = result.sample_values;
+        (500, 300, 20)
         //console.log(sampleValues);
 
+        //ytick marks (These are the 10 largest otu_ids for selected test subject's id.)
+        var ytickSlcRev = otuIds.slice(0, 10) //.reverse()
+            //console.log(ytickSlcRev);
+            // console.log(otuIds);
+        var editYticks = ytickSlcRev.map(ids => 'OTU' + ids + ' ')
+            //console.log(editYticks);
 
-        //*********************************************************** */
-        //* Something is wrong HELP ME WITH THE ARRAY THAT IS NEEDED
-        //*********************************************************** */
-
-
-
-        // 7. Create the yticks for the bar chart.
-        // Hint: Get the the top 10 otu_ids and map them in descending order  
-        //  so the otu_ids with the most bacteria are last. 
-        var sortOTUIds = otuIds.sort((a, b) => b - a);
-        console.log("Sorted: " + sortOTUIds);
-
-        // var numbers = [1, 3, 7, 4, 2, 79, 2, 59, 3]
-        // console.log(numbers)
-        // var sortNumbers = numbers.sort((a, b) => b - a);
-        // console.log(sortNumbers)
-        var yticks = sortOTUIds.slice(0, 10);
-        console.log(yticks);
-
-        //8. Create the trace for the bar chart. 
+        // trace (naming graph and data used) 
         var barData = [{
-            x: otuIds.map(object => object.samples),
-            y: otuIds.map(object => object.otu_ids),
-            text: otuIds.map(object => object.otu_lables),
+            x: sampleValues.map(value => value),
+            y: editYticks,
+            text: otuLabels.map(labels => labels),
             name: "OTU",
             type: "bar",
-            oreientation: "h"
+            orientation: "h"
         }];
-        //9. Create the layout for the bar chart. 
+        // nameing Create the layout for the bar chart. 
         var barLayout = {
             title: "Top 10 Kinds of Belly Jam Found",
-            xaxis: { title: "OTU Ids" },
-            yaxis: {
-                title: "OTU Count",
-            }
-
+            xaxis: { title: "OTU Samples" },
+            // yaxis: {}
+            yaxis: { autorange: "reversed" },
+            margin: { width: 200, height: 100, t: 80, b: 100 }
         };
-        //10. Use Plotly to plot the data with the layout. 
+
+        // //10. Use Plotly to plot the data with the layout. 
         Plotly.newPlot("bar", barData, barLayout)
 
         //**********************// 
         //* BEGIN BUBBLE CHART *//
         //**********************//
-
+        // text = "${otuIds.map(ids => ids)},sampleValues.map(value => value)
         // 1. Create the trace for the bubble chart.
         var bubbleData = [{
-            x: [40, 60, 80, 100], // s/b the otu_id
-            y: [40, 60, 80, 100], // sample_values as y-axix
-            mode: 'markers', // sample values
-
+            x: otuIds.map(ids => ids), // s/b the otu_id
+            y: sampleValues.map(value => value), // sample_values as y-axix
+            text: otuLabels,
+            mode: 'markers',
             marker: {
-                size: [40, 60, 80, 100]
+                color: otuIds,
+                colorscale: 'Portland',
+                size: sampleValues // sample values
             }
         }];
 
         // 2. Create the layout for the bubble chart.
         var bubbleLayout = {
-            title: 'Marker Size',
+            title: 'How Much Bacteria is in Each Person"s Belly Button?',
+            xaxis: { title: "OTU Ids" },
+            // yaxis: { title: "Sample Values" }
+            margin: { l: 100 },
             showledgend: false,
             height: 600,
-            length: 600
+            length: 600,
+            hovermode: 'closest'
         };
 
         // 3. Use Plotly to plot the data with the layout.
         Plotly.newPlot('bubble', bubbleData, bubbleLayout);
-        //* END BUBBLE CHART *//
 
-        // 4. Create the trace for the gauge chart.
-        var gaugeData = [{
-            domain: { x: [0, 1, 3, 4, 5, 6], y: [0, 11] },
-            value: 270,
-            title: "indicator",
-            mode: "gauge+number"
-        }];
 
-        // 5. Create the layout for the gauge chart.
-        var gaugeLayout = { width: 600, height: 500, margin: { t: 0, b: 0 } };
+        // //***********************// 
+        // //* BEGIN GAGE CHARTING *//
+        // //***********************//
+        //console.log(subjectsId);
+        d3.json("samples.json").then((testSubjectData) => {
+            // select all metadata
+            var metadata = testSubjectData.metadata;
+            //console.log(metadata);
+            // select Id's metadata (this is an ARRAY)
+            var resultArray = metadata.filter(sampleObj => sampleObj.id == subjectsId);
+            //console.log(resultArray);
 
-        // 6. Use Plotly to plot the gauge data and layout.
-        Plotly.newPlot('gauge', gaugeData, gaugeLayout);
+            // put resulting Array into an Object
+            var result = resultArray[0];
+            console.log(result);
+
+
+            var timesWashed = parseFloat(result.Washing_Frequency);
+            console.log(timesWashed);
+
+            // trace for the gauge chart.
+            var gaugeData = [{
+                domain: { x: [0, 1], y: [0, 1] },
+                value: timesWashed,
+                title: {
+                    text: "Belly Button Washes<br><sub>(Per Week)</sub>"
+
+                },
+
+                type: "indicator",
+                mode: "gauge+number+delta",
+                // margin: { t: 300 },
+                // delta: { reference: 10 },
+                gauge: {
+                    axis: { range: [null, 10] },
+                    steps: [
+                        { range: [0, 2], color: "rgb(102,102,255)" },
+                        { range: [2, 4], color: "rgb(77,191,153)" },
+                        { range: [4, 6], color: "rgb(230,191,0)" },
+                        { range: [6, 8], color: "rgb(255,153,51)" },
+                        { range: [8, 10], color: "rgb(217,105,82)" }
+                    ],
+                    threshold: {
+                        line: { color: "rgb(255,128,128)", width: 4 },
+                        thickness: 20,
+                        value: 10
+                    }
+                }
+
+            }];
+
+            // 5. Create the layout for the gauge chart.
+            var gaugeLayout = { width: 420, height: 400, margin: { t: 80, b: 10 } };
+
+            // 6. Use Plotly to plot the gauge data and layout.
+            Plotly.newPlot('gauge', gaugeData, gaugeLayout);
+        });
+
+
 
     });
 }
-
-
-// var data = [
-// 	{
-// 		domain: { x: [0, 1], y: [0, 1] },
-// 		value: 2000,
-// 		title: { text: "Speed" },
-// 		type: "indicator",
-// 		mode: "gauge+number"
-// 	}
-// ];
-
-// var layout = { width: 800, height: 300, margin: { t: 50, b: 10 } };
-// Plotly.newPlot('myDiv', data, layout);
