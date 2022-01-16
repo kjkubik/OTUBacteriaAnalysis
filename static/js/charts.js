@@ -1,3 +1,7 @@
+//****************************
+//* BELLY BUTTON JAM WEBPAGE *
+//****************************
+
 // populate dropdown list
 function init() {
     // name location where test_subject_id  
@@ -41,7 +45,9 @@ function optionChanged(newId) {
     buildCharts(newId);
 }
 
-// rendering of Demographics Panel 
+//**********************
+//* Demographics Panel *
+//********************** 
 function buildMetadata(subjectsId) {
     //console.log(subjectsId);
     d3.json("static/json/samples.json").then((testSubjectData) => {
@@ -64,37 +70,16 @@ function buildMetadata(subjectsId) {
         //initialize div
         sampleMetadata.html("");
 
-        //         // get table references
-        //         var tbody = d3.select("tbody");
-
-        //         // initialize html table body
-        //         tbody.html("");
-
-        //         // Loop through each object in the data
-        //         // and append a row and cells for each value in the row
-        //         result.forEach(resultRow => {
-        //             KeyValues =
-        //                 Object.entries(result).forEach(([key, value]) => {
-        //                     sampleMetadata.append("td").text(`${key.toUpperCase().slice(0,1)+key.slice(1)}: ${value}`);
-        //                 });
-        //             let row = tbody.append("tr");
-        //             KeyValues.values(resultRow).forEach((KVPRow) => {
-        //                 let cell = row.append("td");
-        //                 cell.text(KVPRow);
-        //                 // sampleMetadata..text(`${key.toUpperCase().slice(0,1)+key.slice(1)}: ${value}`);
-        //                 // cell.text(val);
-        //             });
-        //         });
-        //     })
-        // };
-        // load results
         Object.entries(result).forEach(([key, value]) => {
             sampleMetadata.append("h5").text(`${key.toUpperCase().slice(0,1)+key.slice(1)}: ${value}`);
         });
     });
 }
 
-// rendering of Charts 
+//****************   
+// Create Charts * 
+//****************
+
 function buildCharts(subjectsId) {
     // d3.json to load and retrieve the static/json/samples.json file 
     d3.json("static/json/samples.json").then((testSubjectData) => {
@@ -117,18 +102,16 @@ function buildCharts(subjectsId) {
 
         // place otu_ids, otu_labels, and sample_values in own Arrays
         var otuIds = result.otu_ids;
-        (1, 20, 100)
         //console.log(otuIds);
         var otuLabels = result.otu_labels;
         //console.log(otuLabels);
         var sampleValues = result.sample_values;
-        (500, 300, 20)
         //console.log(sampleValues);
 
         //ytick marks (These are the 10 largest otu_ids for selected test subject's id.)
         var ytickSlcRev = otuIds.slice(0, 10) //.reverse()
             //console.log(ytickSlcRev);
-            // console.log(otuIds);
+
         var editYticks = ytickSlcRev.map(ids => 'OTU' + ids + ' ')
             //console.log(editYticks);
 
@@ -141,40 +124,39 @@ function buildCharts(subjectsId) {
             type: "bar",
             orientation: "h"
         }];
-        // nameing Create the layout for the bar chart. 
+
+        // layout info for the bar chart 
         var barLayout = {
             title: "Top 10 Kinds of Belly Jam Found",
             xaxis: { title: "OTU Samples" },
-            // yaxis: {}
             yaxis: { autorange: "reversed" },
             margin: { width: 200, height: 100, t: 80, b: 100 }
         };
 
-        // //10. Use Plotly to plot the data with the layout. 
+        // Plotting with Plotly 
         Plotly.newPlot("bar", barData, barLayout)
 
         //**********************// 
         //* BEGIN BUBBLE CHART *//
         //**********************//
-        // text = "${otuIds.map(ids => ids)},sampleValues.map(value => value)
-        // 1. Create the trace for the bubble chart.
+
+        // trace for bubble chart.
         var bubbleData = [{
-            x: otuIds.map(ids => ids), // s/b the otu_id
-            y: sampleValues.map(value => value), // sample_values as y-axix
+            x: otuIds.map(ids => ids),
+            y: sampleValues.map(value => value),
             text: otuLabels,
             mode: 'markers',
             marker: {
                 color: otuIds,
                 colorscale: 'Portland',
-                size: sampleValues // sample values
+                size: sampleValues
             }
         }];
 
-        // 2. Create the layout for the bubble chart.
+        // layout info for bubble chart
         var bubbleLayout = {
             title: "How Much Bacteria is in Each Subject's Belly Button?",
             xaxis: { title: "OTU Ids" },
-            // yaxis: { title: "Sample Values" }
             margin: { l: 100 },
             showledgend: false,
             height: 600,
@@ -182,19 +164,20 @@ function buildCharts(subjectsId) {
             hovermode: 'closest'
         };
 
-        // 3. Use Plotly to plot the data with the layout.
+        // plot using Plotly
         Plotly.newPlot('bubble', bubbleData, bubbleLayout);
 
 
-        // //***********************// 
-        // //* BEGIN GAGE CHARTING *//
-        // //***********************//
-        //console.log(subjectsId);
+        //***********************// 
+        //* BEGIN GAGE CHARTING *//
+        //***********************//
+
         d3.json("static/json/samples.json").then((testSubjectData) => {
             // select all metadata
             var metadata = testSubjectData.metadata;
             //console.log(metadata);
-            // select Id's metadata (this is an ARRAY)
+
+            // select id's metadata (this is an ARRAY)
             var resultArray = metadata.filter(sampleObj => sampleObj.id == subjectsId);
             //console.log(resultArray);
 
@@ -212,13 +195,10 @@ function buildCharts(subjectsId) {
                 value: timesWashed,
                 title: {
                     text: "Belly Button Washes<br><sub>(Per Week)</sub>"
-
                 },
 
                 type: "indicator",
                 mode: "gauge+number+delta",
-                // margin: { t: 300 },
-                // delta: { reference: 10 },
                 gauge: {
                     axis: { range: [null, 10] },
                     steps: [
@@ -237,14 +217,11 @@ function buildCharts(subjectsId) {
 
             }];
 
-            // 5. Create the layout for the gauge chart.
+            // layout info for gauge chart
             var gaugeLayout = { width: 420, height: 400, margin: { t: 80, b: 10 } };
 
-            // 6. Use Plotly to plot the gauge data and layout.
+            // plot using Plotly
             Plotly.newPlot('gauge', gaugeData, gaugeLayout);
         });
-
-
-
     });
 }
