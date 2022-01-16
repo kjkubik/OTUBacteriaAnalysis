@@ -3,7 +3,7 @@ function init() {
     // name location where test_subject_id  
     // is going to be loaded into index.htm.
     var selector = d3.select("#selDataset");
-    d3.json("samples.json").then((testSubjectData) => {
+    d3.json("static/json/samples.json").then((testSubjectData) => {
 
         // select all ids
         var testSubjectId = testSubjectData.test_subject_id;
@@ -44,7 +44,7 @@ function optionChanged(newId) {
 // rendering of Demographics Panel 
 function buildMetadata(subjectsId) {
     //console.log(subjectsId);
-    d3.json("samples.json").then((testSubjectData) => {
+    d3.json("static/json/samples.json").then((testSubjectData) => {
         // select all metadata
         var metadata = testSubjectData.metadata;
         //console.log(metadata);
@@ -96,14 +96,14 @@ function buildMetadata(subjectsId) {
 
 // rendering of Charts 
 function buildCharts(subjectsId) {
-    // d3.json to load and retrieve the samples.json file 
-    d3.json("samples.json").then((testSubjectData) => {
+    // d3.json to load and retrieve the static/json/samples.json file 
+    d3.json("static/json/samples.json").then((testSubjectData) => {
 
         //**********************// 
         //*  BEGIN BAR CHART   *//
         //**********************//
 
-        // get all sample data in samples.json
+        // get all sample data in static/json/samples.json
         var sample = testSubjectData.samples;
         // console.log(samples);
 
@@ -190,7 +190,7 @@ function buildCharts(subjectsId) {
         // //* BEGIN GAGE CHARTING *//
         // //***********************//
         //console.log(subjectsId);
-        d3.json("samples.json").then((testSubjectData) => {
+        d3.json("static/json/samples.json").then((testSubjectData) => {
             // select all metadata
             var metadata = testSubjectData.metadata;
             //console.log(metadata);
